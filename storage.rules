@@ -1,0 +1,19 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    function signedIn() { return request.auth != null; }
+    function isCouple() {
+      return signedIn()
+        && firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role == 'couple';
+    }
+    function albumVisibility(albumId) {
+      return firestore.get(/databases/(default)/documents/albums/$(albumId)).data.visibility;
+    }
+    match /albums/{albumId}/{fileName} {
+      allow read: if isCouple() || (signedIn() && albumVisibility(albumId) == 'guest');
+      allow write: if isCouple()
+        && request.resource.size < 150 * 1024 * 1024
+        && request.resource.contentType.matches('(image|video)/.*');
+    }
+  }
+}
