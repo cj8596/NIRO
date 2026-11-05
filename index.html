@@ -1,113 +1,86 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f8f5ef">
-  <title>NIRO — Our little universe</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>NIRO | Our Memories</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <main id="login-screen" class="login-screen">
-    <section class="login-card">
-      <p class="eyebrow">A PRIVATE LITTLE UNIVERSE</p>
-      <h1>NIRO<span>.</span></h1>
-      <p class="login-intro">Some moments are too lovely to be left in a camera roll.</p>
-      <div class="login-switch" role="tablist" aria-label="Choose login type">
-        <button class="switch active" data-mode="guest" type="button">Guest</button>
-        <button class="switch" data-mode="couple" type="button">The couple</button>
-      </div>
-      <form id="login-form">
-        <label for="email">Email address</label>
-        <input id="email" type="email" autocomplete="username" placeholder="you@example.com" required>
-        <label for="password">Password</label>
-        <input id="password" type="password" autocomplete="current-password" placeholder="Your password" required>
-        <button class="button button-dark full" type="submit" id="login-button">Enter our little universe <span>↗</span></button>
-        <p id="login-error" class="form-error" role="alert"></p>
-      </form>
-      <p class="login-foot">A collection made of little moments, big feelings and everything between.</p>
-    </section>
-    <div class="login-side-note">EST. IN OUR OWN TIME · MADE WITH LOVE</div>
-  </main>
+<div class="loader" id="loader"><h1>NIRO</h1></div>
 
-  <div id="app-screen" class="app-screen hidden">
-    <header class="topbar">
-      <a class="wordmark" href="#" aria-label="NIRO home">NIRO<span>.</span></a>
-      <nav class="main-nav">
-        <a href="#home" class="nav-link active">Home</a>
-        <a href="#albums" class="nav-link">Albums</a>
-        <a href="#reels" class="nav-link">Reels</a>
-        <a href="#moments" class="nav-link">Little moments</a>
-      </nav>
-      <div class="top-actions">
-        <span id="role-label" class="role-pill">GUEST VIEW</span>
-        <button id="logout-button" class="text-button">Log out ↗</button>
-      </div>
-    </header>
-
-    <main id="home" class="page-shell">
-      <section class="hero" id="hero">
-        <div class="hero-copy">
-          <p class="eyebrow">THE NIRO ARCHIVE</p>
-          <h2>A thousand little<br><em>reasons to remember.</em></h2>
-          <p class="hero-description">A home for the places we've been, the things we've laughed at, and the moments we want to keep.</p>
-          <a class="button button-dark" href="#albums">Explore the memories <span>↓</span></a>
-        </div>
-        <div class="hero-photo" aria-label="Featured memory image">
-          <div class="photo-caption"><span>01 / FOREVER FAVOURITES</span><span>♡</span></div>
-        </div>
-        <div class="hero-index">A STORY IN<br>STILL FRAMES</div>
-      </section>
-
-      <section class="welcome-line">
-        <div><p class="eyebrow">WELCOME IN</p><h2 id="welcome-title">A little world of our own.</h2></div>
-        <p id="welcome-description">Take your time. There's no particular order to lovely things.</p>
-      </section>
-
-      <section class="content-section" id="albums">
-        <div class="section-heading"><div><p class="eyebrow">THE COLLECTION</p><h2>Our albums</h2></div><span class="section-note">A few chapters of us</span></div>
-        <div id="album-rows" class="rows"><p class="empty-state">Your albums will appear here once they're added.</p></div>
-      </section>
-
-      <section class="content-section" id="reels">
-        <div class="section-heading"><div><p class="eyebrow">IN MOTION</p><h2>Reels & little films</h2></div><span class="section-note">Press play, stay awhile</span></div>
-        <div id="reel-row" class="media-row"><p class="empty-state">The moving memories will live here.</p></div>
-      </section>
-
-      <section class="content-section" id="moments">
-        <div class="section-heading"><div><p class="eyebrow">THE IN-BETWEEN</p><h2>Little moments</h2></div><span class="section-note">The moments that make the story</span></div>
-        <div id="moments-grid" class="moments-grid"><p class="empty-state">A little space for everyday magic.</p></div>
-      </section>
-
-      <section id="couple-tools" class="couple-tools hidden">
-        <div class="section-heading"><div><p class="eyebrow">YOUR PRIVATE STUDIO</p><h2>Add to the archive</h2></div><span class="section-note">Only visible to the couple</span></div>
-        <form id="album-form" class="upload-panel">
-          <div class="upload-fields">
-            <div><label for="album-title">Album title</label><input id="album-title" required maxlength="70" placeholder="e.g. Our little adventures"></div>
-            <div><label for="album-description">A short note</label><input id="album-description" maxlength="160" placeholder="A line about these memories"></div>
-            <div><label for="album-visibility">Who can see it?</label><select id="album-visibility"><option value="guest">Guests & the couple</option><option value="couple">Only the couple</option></select></div>
-          </div>
-          <div class="upload-bottom">
-            <label class="file-picker" for="media-files">＋ Choose photos or videos <input id="media-files" type="file" accept="image/*,video/*" multiple></label>
-            <button class="button button-dark" type="submit" id="create-album-button">Create album & upload <span>↗</span></button>
-          </div>
-          <p class="upload-hint">Photos and videos are stored in your connected Firebase project, not in the public GitHub repository.</p>
-          <p id="upload-status" class="status-line" role="status"></p>
-        </form>
-      </section>
-      <footer class="footer"><span>NIRO<span class="dot">.</span></span><span>Collected with love · Kept close</span><span id="footer-year"></span></footer>
-    </main>
+<header class="topbar">
+  <a class="brand" href="index.html">NIRO</a>
+  <nav class="main-nav">
+    <a class="nav-link active" href="index.html">HOME</a>
+    <a class="nav-link" href="reels.html">REELS</a>
+    <a class="nav-link" href="books.html">BOOKS</a>
+    <!-- <a class="nav-link" href="photos.html">PHOTOS</a> -->
+  </nav>
+  <div class="top-actions">
+    <button class="login-memory" onclick="openLogin()">LOGIN TO MEMORIES</button>
+    <div class="niro-profile couple-profile hidden"><img src="assets/niro_profile.jpeg" alt="NIRO profile"></div>
+    <span class="role-label hidden">NIRO</span>
+    <button class="logout-button hidden" onclick="logout()">LOGOUT</button>
   </div>
+</header>
 
-  <div id="viewer" class="viewer hidden" role="dialog" aria-modal="true" aria-label="Memory viewer">
-    <button id="viewer-close" class="viewer-close" aria-label="Close">×</button>
-    <div id="viewer-content" class="viewer-content"></div>
-    <div id="viewer-caption" class="viewer-caption"></div>
+<main>
+  <section class="hero">
+    <div class="hero-slide active" style="background-image:url('assets/NIRO_Banner.jpg')">
+      <div class="hero-shade"></div>
+      <div class="hero-content">
+        <div class="hero-kicker">A COLLECTION OF OUR MEMORIES</div>
+        <h1>Our story,<br><em>frame by frame.</em></h1>
+        <p>A little world filled with moments, adventures and everything in between.</p>
+        <div class="hero-buttons">
+          <button class="hero-btn primary" onclick="document.getElementById('homeReels').scrollIntoView({behavior:'smooth'})">▶ Explore</button>
+          <button class="hero-btn secondary" onclick="openLogin()">More Memories</button>
+        </div>
+      </div>
+    </div>
+    <button class="hero-arrow hero-prev" id="heroPrev" aria-label="Previous banner">‹</button>
+    <button class="hero-arrow hero-next" id="heroNext" aria-label="Next banner">›</button>
+    <div class="hero-indicators"><button class="active" aria-label="Banner 1"></button></div>
+  </section>
+
+  <section class="shelf">
+    <div class="shelf-heading"><h2>Our Reels</h2></div>
+    <div class="shelf-track" id="homeReels"></div>
+    <a class="nav-link" href="reels.html">Explore all reels →</a>
+  </section>
+  <section class="shelf">
+    <div class="shelf-heading"><h2>Our Photobooks</h2></div>
+    <div class="shelf-track" id="homeBooks"></div>
+    <a class="nav-link" href="books.html">Explore all books →</a>
+  </section>
+  <!-- <section class="shelf">
+    <div class="shelf-heading"><h2>Still Frames</h2></div>
+    <div class="shelf-track" id="homePhotos"></div>
+    <a class="nav-link" href="photos.html">Explore all photos →</a>
+  </section> -->
+</main>
+
+<footer class="footer"><span>Made of moments and memories.</span><span class="footer-brand">NIRO</span></footer>
+
+<div class="login-modal hidden" id="loginModal">
+  <div class="login-card">
+    <button class="login-close" onclick="closeLogin()" aria-label="Close">×</button>
+    <div class="brand">NIRO</div><h2>Welcome back.</h2><p>Your memories are waiting.</p>
+    <form id="loginForm">
+      <label for="username">USERNAME</label><input id="username" autocomplete="username" required>
+      <label for="password">PASSWORD</label><input id="password" type="password" autocomplete="current-password" required>
+      <span class="login-error" id="loginError"></span>
+      <button class="login-submit" type="submit">ENTER MEMORIES</button>
+    </form>
   </div>
+</div>
 
-  <script type="module" src="app.js"></script>
+<div class="viewer hidden" id="viewer">
+  <button class="viewer-close" onclick="closeViewer()" aria-label="Close viewer">×</button>
+  <div id="viewerContent"></div>
+</div>
+
+<script src="media-data.js"></script><script src="app.js"></script>
 </body>
 </html>

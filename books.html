@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Books | NIRO</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="loader" id="loader">
+        <h1>NIRO</h1>
+    </div>
+    <header class="topbar">
+        <a class="brand" href="index.html">NIRO</a>
+        <nav class="main-nav"><a class="nav-link" href="index.html">HOME</a><a class="nav-link"
+                href="reels.html">REELS</a><a class="nav-link active" href="books.html">BOOKS</a>
+                <!-- <a class="nav-link"
+                href="photos.html">PHOTOS</a> -->
+            </nav>
+        <div class="top-actions"><button class="login-memory" onclick="openLogin()">LOGIN TO MEMORIES</button>
+            <div class="niro-profile couple-profile hidden"><img src="assets/niro-profile.jpg" alt="NIRO profile"></div>
+            <span class="role-label hidden">NIRO</span><button class="logout-button hidden"
+                onclick="logout()">LOGOUT</button>
+        </div>
+    </header>
+    <main>
+        <section class="page-intro">
+            <p class="eyebrow">CHAPTERS OF US</p>
+            <h1>Books</h1>
+            <p class="page-description">Yearly and trip photobooks, collected in one place.</p>
+        </section>
+        <section class="shelf">
+            <div class="shelf-heading">
+                <h2>Yearly Photobooks</h2>
+            </div>
+            <div class="shelf-track" id="yearlyBooks"></div>
+        </section>
+        <section class="shelf">
+            <div class="shelf-heading">
+                <h2>Trip Photobooks</h2>
+            </div>
+            <div class="shelf-track" id="tripBooks"></div>
+        </section>
+    </main>
+    <footer class="footer"><span>Made of moments and memories.</span><span class="footer-brand">NIRO</span></footer>
+    <div class="login-modal hidden" id="loginModal">
+        <div class="login-card"><button class="login-close" onclick="closeLogin()">×</button>
+            <div class="brand">NIRO</div>
+            <h2>Welcome back.</h2>
+            <p>Your memories are waiting.</p>
+            <form id="loginForm"><label for="username">USERNAME</label><input id="username" autocomplete="username"
+                    required><label for="password">PASSWORD</label><input id="password" type="password"
+                    autocomplete="current-password" required><span class="login-error" id="loginError"></span><button
+                    class="login-submit" type="submit">ENTER MEMORIES</button></form>
+        </div>
+    </div>
+    <div class="viewer hidden" id="viewer"><button class="viewer-close" onclick="closeViewer()">×</button>
+        <div id="viewerContent"></div>
+    </div>
+    <script src="media-data.js"></script>
+    <script src="app.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const isCouple = sessionStorage.getItem("niroLoggedIn") === "true";
+            NIRO_MEDIA.books.filter(item => isCouple || item.visibility !== "couple").forEach(item => {
+                const target = item.category === "yearly" ? "yearlyBooks" : "tripBooks";
+                document.getElementById(target).appendChild(createCard(item, true));
+            });
+        });
+    </script>
+</body>
+
+</html>

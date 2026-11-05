@@ -1,226 +1,537 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-import { getFirestore, collection, addDoc, getDocs, getDoc, query, where, orderBy, serverTimestamp, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
-import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js";
-import { firebaseConfig } from "./firebase-config.js";
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-const storage = getStorage(app);
-const $ = (id) => document.getElementById(id);
-let loginMode = "guest";
-let currentRole = null;
-let allAlbums = [];
+const $ = id => document.getElementById(id);
 
-$("footer-year").textContent = new Date().getFullYear();
-document.querySelectorAll(".switch").forEach(btn => btn.addEventListener("click", () => {
-  loginMode = btn.dataset.mode;
-  document.querySelectorAll(".switch").forEach(b => b.classList.toggle("active", b === btn));
-  $("login-error").textContent = "";
-}));
-$("login-form").addEventListener("submit", async (event) => {
-  event.preventDefault();
-  $("login-button").disabled = true;
-  $("login-error").textContent = "";
-  try {
-    const credential = await signInWithEmailAndPassword(auth, $("email").value.trim(), $("password").value);
-    const roleSnap = await getDoc(doc(db, "users", credential.user.uid));
-    const role = roleSnap.data()?.role;
-    if (!role || role !== loginMode) {
-      await signOut(auth);
-      throw new Error("This account does not have " + loginMode + " access. Please choose the correct login.");
-    }
-  } catch (error) {
-    $("login-error").textContent = friendlyError(error);
-  } finally {
-    $("login-button").disabled = false;
-  }
-});
-$("logout-button").addEventListener("click", () => signOut(auth));
-onAuthStateChanged(auth, async user => {
-  if (!user) {
-    $("login-screen").classList.remove("hidden");
-    $("app-screen").classList.add("hidden");
-    return;
-  }
-  try {
-    const snap = await getDoc(doc(db, "users", user.uid));
-    currentRole = snap.data()?.role;
-    if (!["guest", "couple"].includes(currentRole)) throw new Error("Your account has not been assigned a role yet.");
-    $("login-screen").classList.add("hidden");
-    $("app-screen").classList.remove("hidden");
-    $("role-label").textContent = currentRole === "couple" ? "COUPLE ACCESS" : "GUEST VIEW";
-    $("couple-tools").classList.toggle("hidden", currentRole !== "couple");
-    $("welcome-title").textContent = currentRole === "couple" ? "Welcome back to your little world." : "A little world of our own.";
-    await loadAlbums();
-  } catch (error) {
-    $("login-error").textContent = error.message;
-    await signOut(auth);
-  }
-});
 
-async function loadAlbums() {
-  const q = currentRole === "couple"
-    ? query(collection(db, "albums"), orderBy("createdAt", "desc"))
-    : query(collection(db, "albums"), where("visibility", "==", "guest"), orderBy("createdAt", "desc"));
-  const snap = await getDocs(q);
-  allAlbums = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-  renderAlbums();
-}
-function renderAlbums() {
-  const rows = $("album-rows");
-  rows.innerHTML = "";
-  const visible = allAlbums;
-  if (!visible.length) { rows.innerHTML = '<p class="empty-state">Your albums will appear here once they’re added.</p>'; return; }
-  const row = document.createElement("div");
-  row.className = "album-row";
-  visible.forEach(album => {
-    const card = document.createElement("article");
-    card.className = "album-card";
-    const cover = album.media?.find(m => m.type === "image")?.url || "";
-    card.innerHTML = `<div class="album-cover">${cover ? `<img src="${escapeAttr(cover)}" alt="">` : ""}<span class="count">${album.media?.length || 0} ITEMS</span></div><h3>${escapeHtml(album.title)}</h3><p>${escapeHtml(album.description || "A chapter in our story")}</p>`;
-    card.addEventListener("click", () => openAlbum(album));
-    if (currentRole === "couple") {
-      const remove = document.createElement("button");
-      remove.type = "button";
-      remove.className = "album-remove";
-      remove.textContent = "Delete album";
-      remove.addEventListener("click", async (event) => {
-        event.stopPropagation();
-        if (!confirm(`Delete “${album.title}” and all its media? This cannot be undone.`)) return;
-        try {
-          for (const item of (album.media || [])) {
-            if (item.path) await deleteObject(ref(storage, item.path)).catch(() => {});
-          }
-          await deleteDoc(doc(db, "albums", album.id));
-          await loadAlbums();
-        } catch (error) { alert("Could not delete album: " + friendlyError(error)); }
-      });
-      card.appendChild(remove);
-    }
-    row.appendChild(card);
-  });
-  rows.appendChild(row);
-  renderMedia();
-}
-function renderMedia() {
-  const reels = $("reel-row"), moments = $("moments-grid");
-  reels.innerHTML = ""; moments.innerHTML = "";
-  const media = allAlbums.flatMap(a => (a.media || []).map(m => ({...m, albumTitle:a.title})));
-  const videos = media.filter(m => m.type === "video");
-  const photos = media.filter(m => m.type === "image");
-  if (!videos.length) reels.innerHTML = '<p class="empty-state">The moving memories will live here.</p>';
-  videos.forEach(m => reels.appendChild(mediaCard(m, true)));
-  if (!photos.length) moments.innerHTML = '<p class="empty-state">A little space for everyday magic.</p>';
-  photos.slice(0, 12).forEach(m => {
-    const card = document.createElement("div"); card.className = "moment-card";
-    card.innerHTML = `<img src="${escapeAttr(m.url)}" alt="${escapeAttr(m.name || "A memory")}" loading="lazy">`;
-    card.addEventListener("click", () => openViewer(m));
-    moments.appendChild(card);
-  });
-}
-function mediaCard(m, isVideo) {
-  const card = document.createElement("article"); card.className = "media-card";
-  card.innerHTML = `<div class="media-thumb ${isVideo ? "video" : ""}">${isVideo ? "" : `<img src="${escapeAttr(m.url)}" alt="" loading="lazy">`}</div><p>${escapeHtml(m.name || m.albumTitle || "A little memory")}</p>`;
-  card.addEventListener("click", () => openViewer(m)); return card;
-}
-function openAlbum(album) {
-  const viewer = $("viewer"), content = $("viewer-content");
-  content.innerHTML = "";
-  const grid = document.createElement("div"); grid.className = "album-view-grid";
-  grid.style.cssText = "display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;max-height:75vh;overflow:auto;width:min(85vw,900px)";
-  (album.media || []).forEach(m => {
-    const tile = document.createElement("div");
-    tile.style.cssText = "position:relative;min-width:0";
-    const el = document.createElement(m.type === "video" ? "video" : "img");
-    el.src = m.url; el.style.cssText = "width:100%;height:220px;object-fit:cover;cursor:pointer";
-    if (m.type === "video") { el.controls = true; el.style.objectFit = "contain"; }
-    else el.addEventListener("click", () => openViewer(m));
-    tile.appendChild(el);
-    if (currentRole === "couple") {
-      const remove = document.createElement("button");
-      remove.type = "button"; remove.textContent = "Remove";
-      remove.style.cssText = "margin-top:6px;padding:7px 10px;border:1px solid #d6c7b6;background:#fffdf9;color:#685747;font-size:10px;cursor:pointer";
-      remove.addEventListener("click", async () => {
-        if (!confirm(`Remove “${m.name}” from this album?`)) return;
-        try {
-          const remaining = (album.media || []).filter(item => item.path !== m.path);
-          await deleteDocMedia(album, m, remaining);
-          $("viewer-caption").textContent = "Memory removed.";
-          await loadAlbums();
-          setTimeout(() => openAlbum(allAlbums.find(a => a.id === album.id) || {...album, media: remaining}), 250);
-        } catch (error) { alert("Could not remove media: " + friendlyError(error)); }
-      });
-      tile.appendChild(remove);
-    }
-    grid.appendChild(tile);
-  });
-  content.appendChild(grid); $("viewer-caption").textContent = album.title + (album.description ? " — " + album.description : "");
-  viewer.classList.remove("hidden");
-}
-async function deleteDocMedia(album, mediaItem, remaining) {
-  const { updateDoc } = await import("https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js");
-  await updateDoc(doc(db, "albums", album.id), { media: remaining });
-  if (mediaItem.path) await deleteObject(ref(storage, mediaItem.path)).catch(() => {});
-}
-function openViewer(m) {
-  const content = $("viewer-content"); content.innerHTML = "";
-  const el = document.createElement(m.type === "video" ? "video" : "img");
-  el.src = m.url; if (m.type === "video") { el.controls = true; el.autoplay = true; }
-  else el.alt = m.name || "A memory";
-  content.appendChild(el); $("viewer-caption").textContent = m.name || m.albumTitle || "A little memory";
-  $("viewer").classList.remove("hidden");
-}
-$("viewer-close").addEventListener("click", () => { $("viewer").classList.add("hidden"); $("viewer-content").innerHTML = ""; });
-$("viewer").addEventListener("click", e => { if (e.target === $("viewer")) $("viewer-close").click(); });
+// ==========================================
+// LOGIN AND SESSION MANAGEMENT
+// ==========================================
 
-$("album-form").addEventListener("submit", async event => {
-  event.preventDefault();
-  if (currentRole !== "couple") return;
-  const files = [...$("media-files").files];
-  if (!files.length) { $("upload-status").textContent = "Choose at least one photo or video first."; return; }
-  if (files.some(f => f.size > 150 * 1024 * 1024)) { $("upload-status").textContent = "Each file must be smaller than 150 MB."; return; }
-  $("create-album-button").disabled = true;
-  $("upload-status").textContent = "Creating album…";
-  let albumRef;
-  try {
-    albumRef = await addDoc(collection(db, "albums"), {
-      title: $("album-title").value.trim(),
-      description: $("album-description").value.trim(),
-      visibility: $("album-visibility").value,
-      media: [],
-      createdAt: serverTimestamp()
+// Navigation between pages keeps the login active.
+// Refreshing the page logs the user out.
+// A successful login is allowed to complete its reload.
+
+const navigationEntry = performance.getEntriesByType("navigation")[0];
+
+const loginJustSucceeded =
+    sessionStorage.getItem("niroLoginJustSet") === "true";
+
+if (loginJustSucceeded) {
+    sessionStorage.removeItem("niroLoginJustSet");
+} else if (navigationEntry && navigationEntry.type === "reload") {
+    sessionStorage.removeItem("niroLoggedIn");
+}
+
+const loggedIn = () =>
+    sessionStorage.getItem("niroLoggedIn") === "true";
+
+
+function updateAccess() {
+    document.body.classList.toggle("couple-mode", loggedIn());
+
+    document.querySelectorAll(".login-memory").forEach(el => {
+        el.classList.toggle("hidden", loggedIn());
     });
-    const uploaded = [];
-    for (let i = 0; i < files.length; i++) {
-      const file = files[i];
-      $("upload-status").textContent = `Uploading ${i + 1} of ${files.length}: ${file.name}`;
-      const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
-      const path = `albums/${albumRef.id}/${Date.now()}_${safeName}`;
-      const storageRef = ref(storage, path);
-      await uploadBytes(storageRef, file, { contentType: file.type });
-      uploaded.push({ name: file.name, type: file.type.startsWith("video/") ? "video" : "image", path, url: await getDownloadURL(storageRef) });
-    }
-    const { updateDoc } = await import("https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js");
-    await updateDoc(albumRef, { media: uploaded });
-    $("album-form").reset();
-    $("upload-status").textContent = "Your album is now in the archive.";
-    await loadAlbums();
-  } catch (error) {
-    $("upload-status").textContent = "Upload failed: " + friendlyError(error);
-  } finally {
-    $("create-album-button").disabled = false;
-  }
-});
 
-function friendlyError(error) {
-  const messages = {
-    "auth/invalid-credential":"Email or password is incorrect.",
-    "auth/too-many-requests":"Too many attempts. Please try again later.",
-    "auth/network-request-failed":"Network error. Check your connection."
-  };
-  return messages[error.code] || error.message || "Something went wrong.";
+    document.querySelectorAll(
+        ".couple-profile, .role-label, .logout-button"
+    ).forEach(el => {
+        el.classList.toggle("hidden", !loggedIn());
+    });
 }
-function escapeHtml(s="") { return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
-function escapeAttr(s="") { return escapeHtml(s); }
+
+
+function openLogin() {
+    $("loginModal")?.classList.remove("hidden");
+}
+
+
+function closeLogin() {
+    $("loginModal")?.classList.add("hidden");
+}
+
+
+function logout() {
+    sessionStorage.removeItem("niroLoggedIn");
+    sessionStorage.removeItem("niroLoginJustSet");
+    location.reload();
+}
+
+
+function setupLogin() {
+    $("loginForm")?.addEventListener("submit", event => {
+        event.preventDefault();
+
+        const username = $("username")?.value.trim();
+        const password = $("password")?.value;
+
+        if (username === "niro" && password === "2616") {
+            sessionStorage.setItem("niroLoggedIn", "true");
+            sessionStorage.setItem("niroLoginJustSet", "true");
+
+            closeLogin();
+            location.reload();
+        } else {
+            $("loginError").textContent =
+                "Incorrect username or password.";
+        }
+    });
+}
+
+
+// ==========================================
+// MEDIA ACCESS
+// ==========================================
+
+function visibleItems(items) {
+    return (items || []).filter(item =>
+        loggedIn() || item.visibility !== "couple"
+    );
+}
+
+
+// ==========================================
+// CREATE MEDIA CARDS
+// ==========================================
+
+function createCard(item, book = false) {
+    const card = document.createElement("article");
+
+    card.className = `media-card${book ? " book-card" : ""}`;
+
+    const imageBox = document.createElement("div");
+    imageBox.className = "media-image";
+
+    const image = document.createElement("img");
+
+    image.src = item.image || "assets/niro-hero.jpg";
+    image.alt = item.title || "NIRO memory";
+    image.loading = "lazy";
+
+    imageBox.appendChild(image);
+
+    if (item.type === "video" && !book) {
+        const play = document.createElement("span");
+
+        play.className = "media-play";
+        play.textContent = "▶";
+
+        imageBox.appendChild(play);
+    }
+
+    card.appendChild(imageBox);
+
+    const title = document.createElement("h3");
+    title.textContent = item.title || "Untitled memory";
+
+    card.appendChild(title);
+
+    if (item.description) {
+        const description = document.createElement("p");
+
+        description.textContent = item.description;
+
+        card.appendChild(description);
+    }
+
+    card.addEventListener("click", () => {
+        const url =
+            item.url || item.image || "assets/niro-hero.jpg";
+
+        openViewer(
+            url,
+            item.type === "video" && item.url ? "video" : "image"
+        );
+    });
+
+    return card;
+}
+
+
+// ==========================================
+// RENDER MEDIA SHELVES
+// ==========================================
+
+function renderShelf(id, items, book = false) {
+    const track = $(id);
+
+    if (!track) return;
+
+    track.replaceChildren();
+
+    visibleItems(items).forEach(item => {
+        track.appendChild(createCard(item, book));
+    });
+}
+
+
+// ==========================================
+// MEDIA VIEWER
+// ==========================================
+
+function openViewer(url, type) {
+    const viewer = $("viewer");
+    const content = $("viewerContent");
+
+    if (!viewer || !content) return;
+
+    content.replaceChildren();
+
+    const media = document.createElement(
+        type === "video" ? "video" : "img"
+    );
+
+    media.src = url;
+
+    if (type === "video") {
+        media.controls = true;
+        media.autoplay = true;
+        media.playsInline = true;
+    }
+
+    content.appendChild(media);
+
+    viewer.classList.remove("hidden");
+}
+
+
+function closeViewer() {
+    const viewer = $("viewer");
+    const content = $("viewerContent");
+
+    viewer?.classList.add("hidden");
+
+    // Stop any video when the viewer closes.
+    content?.querySelectorAll("video").forEach(video => {
+        video.pause();
+        video.removeAttribute("src");
+        video.load();
+    });
+
+    content?.replaceChildren();
+}
+
+
+// ==========================================
+// HOMEPAGE HERO SLIDER
+// ==========================================
+
+function setupHero() {
+    const slides = [
+        ...document.querySelectorAll(".hero-slide")
+    ];
+
+    if (slides.length < 2) return;
+
+    let active = 0;
+
+    const dots = [
+        ...document.querySelectorAll(".hero-indicators button")
+    ];
+
+    function show(index) {
+        active = (index + slides.length) % slides.length;
+
+        slides.forEach((slide, i) => {
+            slide.classList.toggle("active", i === active);
+        });
+
+        dots.forEach((dot, i) => {
+            dot.classList.toggle("active", i === active);
+        });
+    }
+
+    $("heroPrev")?.addEventListener("click", () => {
+        show(active - 1);
+    });
+
+    $("heroNext")?.addEventListener("click", () => {
+        show(active + 1);
+    });
+
+    dots.forEach((dot, i) => {
+        dot.addEventListener("click", () => show(i));
+    });
+
+    setInterval(() => show(active + 1), 7000);
+}
+
+
+// ==========================================
+// BACKGROUND MUSIC
+// ==========================================
+
+function setupMusic() {
+    const MUSIC_TIME_KEY = "niroMusicTime";
+    const MUSIC_PLAYING_KEY = "niroMusicPlaying";
+
+    const navigationEntry =
+        performance.getEntriesByType("navigation")[0];
+
+    const isReload = navigationEntry?.type === "reload";
+
+    const niroMusic = new Audio("./assets/niro-music.mp3");
+
+    niroMusic.loop = true;
+    niroMusic.volume = 0.25;
+    niroMusic.preload = "auto";
+
+    // Floating music button
+    const musicButton = document.createElement("button");
+
+    musicButton.id = "musicToggle";
+    musicButton.className = "music-toggle";
+    musicButton.textContent = "♫ Play Music";
+
+    musicButton.setAttribute(
+        "aria-label",
+        "Play or pause background music"
+    );
+
+    document.body.appendChild(musicButton);
+
+
+    // On refresh, restart at 3 seconds.
+    // On normal navigation, restore the previous position.
+
+    let savedTime = isReload
+        ? null
+        : sessionStorage.getItem(MUSIC_TIME_KEY);
+
+    let restoredTime = savedTime === null
+        ? 3
+        : Math.max(0, Number(savedTime) || 0);
+
+    let musicEnabled = isReload
+        ? true
+        : sessionStorage.getItem(MUSIC_PLAYING_KEY) !== "false";
+
+    let musicReady = false;
+    let autoplayBlocked = false;
+
+
+    function saveMusicState() {
+        if (
+            musicReady &&
+            Number.isFinite(niroMusic.currentTime)
+        ) {
+            sessionStorage.setItem(
+                MUSIC_TIME_KEY,
+                String(niroMusic.currentTime)
+            );
+        }
+
+        sessionStorage.setItem(
+            MUSIC_PLAYING_KEY,
+            String(musicEnabled)
+        );
+    }
+
+
+    function updateButton() {
+        musicButton.textContent = niroMusic.paused
+            ? "♫ Play Music"
+            : "♫ Music On";
+    }
+
+
+    function startMusic() {
+        if (!musicEnabled || !musicReady) return;
+
+        niroMusic.play()
+            .then(() => {
+                autoplayBlocked = false;
+                updateButton();
+            })
+            .catch(error => {
+                autoplayBlocked = true;
+                updateButton();
+
+                console.log(
+                    "Autoplay blocked by browser:",
+                    error
+                );
+            });
+    }
+
+
+    // Restore playback position after audio metadata loads.
+    niroMusic.addEventListener("loadedmetadata", () => {
+        if (Number.isFinite(niroMusic.duration)) {
+            restoredTime = Math.min(
+                restoredTime,
+                Math.max(0, niroMusic.duration - 0.1)
+            );
+        }
+
+        niroMusic.currentTime = restoredTime;
+    }, { once: true });
+
+
+    // Attempt to play automatically when the audio is ready.
+    niroMusic.addEventListener("canplay", () => {
+        if (!musicReady) {
+            musicReady = true;
+
+            if (musicEnabled) {
+                startMusic();
+            } else {
+                updateButton();
+            }
+        }
+    }, { once: true });
+
+
+    // Retry autoplay after the visitor interacts with the page.
+    function firstInteraction(event) {
+        if (event.target.closest("#musicToggle")) return;
+
+        if (
+            autoplayBlocked &&
+            musicEnabled &&
+            niroMusic.paused
+        ) {
+            startMusic();
+        }
+    }
+
+    document.addEventListener("click", firstInteraction);
+    document.addEventListener("touchstart", firstInteraction);
+    document.addEventListener("keydown", firstInteraction);
+
+
+    // Manual music button.
+    musicButton.addEventListener("click", () => {
+        if (niroMusic.paused) {
+            musicEnabled = true;
+
+            sessionStorage.setItem(
+                MUSIC_PLAYING_KEY,
+                "true"
+            );
+
+            if (musicReady) {
+                startMusic();
+            }
+        } else {
+            musicEnabled = false;
+
+            niroMusic.pause();
+
+            saveMusicState();
+            updateButton();
+        }
+    });
+
+
+    // Save playback position when navigating away.
+    window.addEventListener("pagehide", saveMusicState);
+
+    niroMusic.addEventListener("timeupdate", () => {
+        sessionStorage.setItem(
+            MUSIC_TIME_KEY,
+            String(niroMusic.currentTime)
+        );
+    });
+
+
+    // Show an error if the music file cannot be loaded.
+    niroMusic.addEventListener("error", () => {
+        musicButton.textContent = "♫ Music Unavailable";
+
+        console.error(
+            "Could not load assets/niro-music.mp3"
+        );
+    });
+
+
+    // ======================================
+    // PAUSE MUSIC WHEN A VIDEO STARTS
+    // ======================================
+
+    let resumeMusicAfterVideo = false;
+
+
+    // Pause background music when any video starts.
+    document.addEventListener("play", event => {
+        if (event.target.tagName !== "VIDEO") return;
+
+        // Remember whether music was playing before the video.
+        resumeMusicAfterVideo = !niroMusic.paused;
+
+        if (resumeMusicAfterVideo) {
+            niroMusic.pause();
+            updateButton();
+        }
+    }, true);
+
+
+    // Resume music when the video is paused.
+    document.addEventListener("pause", event => {
+        if (event.target.tagName !== "VIDEO") return;
+
+        if (resumeMusicAfterVideo) {
+            resumeMusicAfterVideo = false;
+
+            if (musicEnabled) {
+                startMusic();
+            }
+        }
+    }, true);
+
+
+    // Resume music when the video finishes.
+    document.addEventListener("ended", event => {
+        if (event.target.tagName !== "VIDEO") return;
+
+        if (resumeMusicAfterVideo) {
+            resumeMusicAfterVideo = false;
+
+            if (musicEnabled) {
+                startMusic();
+            }
+        }
+    }, true);
+}
+
+
+// ==========================================
+// HOMEPAGE CONTENT
+// ==========================================
+
+function renderHome() {
+    if (typeof NIRO_MEDIA === "undefined") return;
+
+    renderShelf("homeReels", NIRO_MEDIA.reels);
+
+    renderShelf(
+        "homeBooks",
+        NIRO_MEDIA.books,
+        true
+    );
+
+    renderShelf(
+        "homePhotos",
+        NIRO_MEDIA.photos
+    );
+}
+
+
+// ==========================================
+// INITIALISE WEBSITE
+// ==========================================
+
+document.addEventListener("DOMContentLoaded", () => {
+    setupLogin();
+
+    updateAccess();
+
+    setupHero();
+
+    renderHome();
+
+    setupMusic();
+
+    setTimeout(() => {
+        $("loader")?.classList.add("done");
+    }, 850);
+});
