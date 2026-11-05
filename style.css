@@ -15,44 +15,44 @@
 * {
     box-sizing: border-box;
     margin: 0;
-    padding: 0
+    padding: 0;
 }
 
 html {
-    scroll-behavior: smooth
+    scroll-behavior: smooth;
 }
 
 body {
     background: var(--ivory);
     color: var(--ink);
     font-family: var(--body);
-    min-height: 100vh
+    min-height: 100vh;
 }
 
-button,
-input {
-    font: inherit
+button, input {
+    font: inherit;
 }
 
-button,
-a {
-    -webkit-tap-highlight-color: transparent
+button, a {
+    -webkit-tap-highlight-color: transparent;
 }
 
 a {
     text-decoration: none;
-    color: inherit
+    color: inherit;
 }
 
 button {
-    cursor: pointer
+    cursor: pointer;
 }
 
 .hidden {
-    display: none !important
+    display: none !important;
 }
 
-/* Loader */
+
+/* LOADER */
+
 .loader {
     position: fixed;
     inset: 0;
@@ -60,13 +60,13 @@ button {
     display: grid;
     place-items: center;
     background: var(--ivory);
-    transition: opacity .6s, visibility .6s
+    transition: opacity .6s, visibility .6s;
 }
 
 .loader.done {
     opacity: 0;
     visibility: hidden;
-    pointer-events: none
+    pointer-events: none;
 }
 
 .loader h1 {
@@ -74,10 +74,12 @@ button {
     font-size: clamp(4rem, 12vw, 8rem);
     letter-spacing: 12px;
     color: var(--teal);
-    font-weight: 600
+    font-weight: 600;
 }
 
-/* Navigation */
+
+/* NAVIGATION */
+
 .topbar {
     height: 76px;
     padding: 0 4%;
@@ -89,7 +91,7 @@ button {
     z-index: 100;
     background: rgba(247, 245, 239, .97);
     border-bottom: 1px solid var(--line);
-    backdrop-filter: blur(12px)
+    backdrop-filter: blur(12px);
 }
 
 .brand {
@@ -98,13 +100,13 @@ button {
     font-size: 2.1rem;
     font-weight: 700;
     letter-spacing: 3px;
-    white-space: nowrap
+    white-space: nowrap;
 }
 
 .main-nav {
     display: flex;
     align-items: center;
-    gap: 8px
+    gap: 8px;
 }
 
 .nav-link {
@@ -114,20 +116,20 @@ button {
     font-weight: 700;
     letter-spacing: .5px;
     color: var(--muted);
-    transition: .2s
+    transition: .2s;
 }
 
 .nav-link:hover,
 .nav-link.active {
     color: var(--teal);
-    background: var(--teal-light)
+    background: var(--teal-light);
 }
 
 .top-actions {
     margin-left: auto;
     display: flex;
     align-items: center;
-    gap: 14px
+    gap: 14px;
 }
 
 .login-memory {
@@ -138,11 +140,11 @@ button {
     padding: 12px 17px;
     font-size: .65rem;
     font-weight: 700;
-    letter-spacing: 1px
+    letter-spacing: 1px;
 }
 
 .login-memory:hover {
-    opacity: .85
+    opacity: .85;
 }
 
 .niro-profile {
@@ -150,20 +152,20 @@ button {
     height: 42px;
     border-radius: 50%;
     border: 2px solid var(--teal);
-    overflow: hidden
+    overflow: hidden;
 }
 
 .niro-profile img {
     width: 100%;
     height: 100%;
-    object-fit: cover
+    object-fit: cover;
 }
 
 .role-label {
     color: var(--teal);
     font-size: .68rem;
     font-weight: 700;
-    letter-spacing: 1px
+    letter-spacing: 1px;
 }
 
 .logout-button {
@@ -171,17 +173,19 @@ button {
     background: transparent;
     color: var(--teal);
     font-size: .68rem;
-    font-weight: 700
+    font-weight: 700;
 }
 
-/* Hero */
+
+/* HERO */
+
 .hero {
     position: relative;
     height: calc(100vh - 76px);
     min-height: 540px;
     max-height: 900px;
     overflow: hidden;
-    background: var(--ivory-dark)
+    background: var(--ivory-dark);
 }
 
 .hero-slide {
@@ -191,18 +195,20 @@ button {
     visibility: hidden;
     transition: opacity .8s ease;
     background-size: cover;
-    background-position: center
+    background-position: center;
 }
 
 .hero-slide.active {
     opacity: 1;
-    visibility: visible
+    visibility: visible;
 }
 
 .hero-shade {
     position: absolute;
     inset: 0;
-    background: linear-gradient(90deg, rgba(18, 35, 31, .68), rgba(18, 35, 31, .04) 90%), linear-gradient(0deg, rgba(18, 35, 31, .4), transparent 65%)
+    background:
+        linear-gradient(90deg, rgba(18, 35, 31, .68), rgba(18, 35, 31, .04) 90%),
+        linear-gradient(0deg, rgba(18, 35, 31, .4), transparent 65%);
 }
 
 .hero-content {
@@ -211,14 +217,14 @@ button {
     bottom: 13%;
     max-width: 650px;
     color: white;
-    z-index: 2
+    z-index: 2;
 }
 
 .hero-kicker {
     font-size: .66rem;
     font-weight: 700;
     letter-spacing: 3px;
-    margin-bottom: 18px
+    margin-bottom: 18px;
 }
 
 .hero-content h1 {
@@ -226,19 +232,19 @@ button {
     font-size: clamp(3rem, 7vw, 6rem);
     font-weight: 500;
     line-height: 1.05;
-    margin-bottom: 20px
+    margin-bottom: 20px;
 }
 
 .hero-content p {
     font-size: .82rem;
     line-height: 1.9;
     max-width: 440px;
-    margin-bottom: 25px
+    margin-bottom: 25px;
 }
 
 .hero-buttons {
     display: flex;
-    gap: 12px
+    gap: 12px;
 }
 
 .hero-btn {
@@ -246,17 +252,17 @@ button {
     padding: 14px 23px;
     border-radius: 5px;
     font-size: .72rem;
-    font-weight: 700
+    font-weight: 700;
 }
 
 .hero-btn.primary {
     background: var(--ivory);
-    color: var(--ink)
+    color: var(--ink);
 }
 
 .hero-btn.secondary {
     background: rgba(40, 107, 102, .92);
-    color: white
+    color: white;
 }
 
 .hero-arrow {
@@ -269,15 +275,15 @@ button {
     border: 0;
     background: rgba(247, 245, 239, .75);
     color: var(--teal);
-    font-size: 1.7rem
+    font-size: 1.7rem;
 }
 
 .hero-prev {
-    left: 15px
+    left: 15px;
 }
 
 .hero-next {
-    right: 15px
+    right: 15px;
 }
 
 .hero-indicators {
@@ -286,23 +292,25 @@ button {
     right: 5%;
     display: flex;
     gap: 8px;
-    z-index: 4
+    z-index: 4;
 }
 
 .hero-indicators button {
     width: 24px;
     height: 4px;
     border: 0;
-    background: rgba(255, 255, 255, .55)
+    background: rgba(255, 255, 255, .55);
 }
 
 .hero-indicators button.active {
-    background: white
+    background: white;
 }
 
-/* Page titles and shelves */
+
+/* PAGE TITLES AND SHELVES */
+
 .page-intro {
-    padding: 50px 5% 20px
+    padding: 50px 5% 20px;
 }
 
 .eyebrow {
@@ -310,13 +318,13 @@ button {
     font-size: .64rem;
     font-weight: 700;
     letter-spacing: 3px;
-    margin-bottom: 12px
+    margin-bottom: 12px;
 }
 
 .page-intro h1 {
     font-family: var(--heading);
     font-size: clamp(2.8rem, 6vw, 4.5rem);
-    font-weight: 500
+    font-weight: 500;
 }
 
 .page-description {
@@ -324,25 +332,25 @@ button {
     font-family: var(--heading);
     font-style: italic;
     margin-top: 12px;
-    font-size: 1.05rem
+    font-size: 1.05rem;
 }
 
 .shelf {
     padding: 27px 5% 34px;
-    overflow: hidden
+    overflow: hidden;
 }
 
 .shelf-heading {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 17px
+    margin-bottom: 17px;
 }
 
 .shelf-heading h2 {
     font-family: var(--heading);
     font-size: 1.75rem;
-    font-weight: 500
+    font-weight: 500;
 }
 
 .shelf-track {
@@ -353,26 +361,26 @@ button {
     padding: 5px 3px 20px;
     scroll-behavior: smooth;
     scrollbar-width: thin;
-    scrollbar-color: var(--teal) transparent
+    scrollbar-color: var(--teal) transparent;
 }
 
 .shelf-track::-webkit-scrollbar {
-    height: 5px
+    height: 5px;
 }
 
 .shelf-track::-webkit-scrollbar-thumb {
     background: var(--teal);
-    border-radius: 10px
+    border-radius: 10px;
 }
 
 .media-card {
     flex: 0 0 255px;
     cursor: pointer;
-    transition: transform .25s ease
+    transition: transform .25s ease;
 }
 
 .media-card:hover {
-    transform: scale(1.045)
+    transform: scale(1.045);
 }
 
 .media-image {
@@ -380,30 +388,30 @@ button {
     background: var(--ivory-dark);
     border-radius: 8px;
     overflow: hidden;
-    position: relative
+    position: relative;
 }
 
 .media-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform .3s
+    transition: transform .3s;
 }
 
 .media-card:hover .media-image img {
-    transform: scale(1.06)
+    transform: scale(1.06);
 }
 
 .media-card h3 {
     font-size: .76rem;
     font-weight: 700;
-    margin-top: 12px
+    margin-top: 12px;
 }
 
 .media-card p {
     font-size: .68rem;
     color: var(--muted);
-    margin-top: 5px
+    margin-top: 5px;
 }
 
 .media-tag {
@@ -415,7 +423,7 @@ button {
     padding: 6px 10px;
     font-size: .55rem;
     font-weight: 700;
-    letter-spacing: 1px
+    letter-spacing: 1px;
 }
 
 .media-play {
@@ -427,14 +435,16 @@ button {
     font-size: 2rem;
     background: rgba(0, 0, 0, .12);
     opacity: 0;
-    transition: opacity .2s
+    transition: opacity .2s;
 }
 
 .media-card:hover .media-play {
-    opacity: 1
+    opacity: 1;
 }
 
-/* Book Cards - Same horizontal size as Reels */
+
+/* BOOK CARDS */
+
 .book-card {
     flex-basis: 255px;
 }
@@ -449,12 +459,14 @@ button {
     object-fit: cover;
 }
 
-/* Filters */
+
+/* FILTERS */
+
 .filters {
     display: flex;
     gap: 10px;
     flex-wrap: wrap;
-    padding: 15px 5% 5px
+    padding: 15px 5% 5px;
 }
 
 .filter-button {
@@ -464,17 +476,19 @@ button {
     padding: 10px 17px;
     border-radius: 30px;
     font-size: .68rem;
-    font-weight: 700
+    font-weight: 700;
 }
 
 .filter-button.active,
 .filter-button:hover {
     color: white;
     background: var(--teal);
-    border-color: var(--teal)
+    border-color: var(--teal);
 }
 
-/* Viewer */
+
+/* GENERAL MEDIA VIEWER */
+
 .viewer {
     position: fixed;
     inset: 0;
@@ -482,14 +496,14 @@ button {
     background: rgba(15, 25, 23, .94);
     display: grid;
     place-items: center;
-    padding: 30px
+    padding: 30px;
 }
 
 .viewer img,
 .viewer video {
     max-width: 90%;
     max-height: 80vh;
-    object-fit: contain
+    object-fit: contain;
 }
 
 .viewer-close {
@@ -499,10 +513,12 @@ button {
     border: 0;
     background: transparent;
     color: white;
-    font-size: 2.5rem
+    font-size: 2.5rem;
 }
 
-/* Login */
+
+/* LOGIN */
+
 .login-modal {
     position: fixed;
     inset: 0;
@@ -510,7 +526,7 @@ button {
     background: rgba(25, 35, 32, .6);
     display: grid;
     place-items: center;
-    padding: 20px
+    padding: 20px;
 }
 
 .login-card {
@@ -518,33 +534,33 @@ button {
     background: var(--ivory);
     width: min(420px, 100%);
     padding: 45px;
-    border-radius: 8px
+    border-radius: 8px;
 }
 
 .login-card h2 {
     font-family: var(--heading);
     font-size: 2.5rem;
     font-weight: 500;
-    margin-bottom: 8px
+    margin-bottom: 8px;
 }
 
-.login-card>p {
+.login-card > p {
     font-family: var(--heading);
     font-style: italic;
     color: var(--muted);
-    margin-bottom: 25px
+    margin-bottom: 25px;
 }
 
 .login-card form {
     display: flex;
     flex-direction: column;
-    gap: 10px
+    gap: 10px;
 }
 
 .login-card label {
     font-size: .65rem;
     font-weight: 700;
-    letter-spacing: 1px
+    letter-spacing: 1px;
 }
 
 .login-card input {
@@ -552,7 +568,7 @@ button {
     border: 1px solid var(--line);
     background: white;
     margin-bottom: 10px;
-    outline-color: var(--teal)
+    outline-color: var(--teal);
 }
 
 .login-submit {
@@ -562,7 +578,7 @@ button {
     padding: 14px;
     font-size: .72rem;
     font-weight: 700;
-    letter-spacing: 1px
+    letter-spacing: 1px;
 }
 
 .login-close {
@@ -572,16 +588,18 @@ button {
     border: 0;
     background: transparent;
     font-size: 2rem;
-    color: var(--muted)
+    color: var(--muted);
 }
 
 .login-error {
     color: #a43e38;
     font-size: .72rem;
-    min-height: 1em
+    min-height: 1em;
 }
 
-/* Footer */
+
+/* FOOTER */
+
 .footer {
     border-top: 1px solid var(--line);
     margin-top: 45px;
@@ -590,7 +608,7 @@ button {
     align-items: center;
     justify-content: space-between;
     color: var(--muted);
-    font-size: .65rem
+    font-size: .65rem;
 }
 
 .footer-brand {
@@ -598,13 +616,18 @@ button {
     font-size: 1.8rem;
     font-weight: 600;
     letter-spacing: 3px;
-    color: var(--teal)
+    color: var(--teal);
 }
 
-/* Couple-only interface elements */
+
+/* COUPLE-ONLY CONTENT */
+
 body:not(.couple-mode) .couple-only {
-    display: none !important
+    display: none !important;
 }
+
+
+/* MUSIC BUTTON */
 
 .music-toggle {
     position: fixed;
@@ -621,93 +644,456 @@ body:not(.couple-mode) .couple-only {
     box-shadow: 0 4px 15px rgba(0,0,0,.15);
 }
 
-@media(max-width:760px) {
+
+/* ==========================================
+   NIRO DIGITAL PHOTOBOOK
+   3D PAGE TURN
+========================================== */
+
+.flipbook-viewer {
+    position: fixed;
+    inset: 0;
+    z-index: 6000;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 28px 16px;
+    background: radial-gradient(
+        ellipse at center,
+        #faf8f2 0%,
+        #e8e3d8 100%
+    );
+    color: var(--ink);
+    overflow: hidden;
+    touch-action: pan-y;
+}
+
+.flipbook-viewer.active {
+    display: flex;
+}
+
+.flipbook-close {
+    position: absolute;
+    top: 16px;
+    right: 24px;
+    z-index: 20;
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(255,255,255,.88);
+    color: var(--ink);
+    font-size: 30px;
+    cursor: pointer;
+    box-shadow: 0 3px 12px rgba(0,0,0,.10);
+}
+
+.flipbook-heading {
+    flex: 0 0 auto;
+    max-width: 80%;
+    margin: 0 0 20px;
+    color: var(--teal);
+    font-family: var(--heading);
+    font-size: clamp(19px,2.5vw,27px);
+    text-align: center;
+}
+
+.flipbook-stage {
+    display: flex;
+    flex: 1 1 auto;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(12px,3vw,30px);
+    width: 100%;
+    min-height: 0;
+}
+
+.flipbook-page-wrap {
+    position: relative;
+    height: min(70vh,760px);
+    width: min(48vw,500px);
+    max-width: 72vw;
+    aspect-ratio: 2/3;
+    perspective: 2200px;
+    perspective-origin: 50% 50%;
+}
+
+.flipbook-page-stack {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    isolation: isolate;
+    transform-style: preserve-3d;
+    filter: drop-shadow(0 18px 22px rgba(35,40,36,.20));
+}
+
+/* Page underneath */
+
+.flipbook-under-image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: white;
+    border-radius: 2px;
+    box-shadow: inset 5px 0 12px rgba(0,0,0,.06);
+}
+
+/* Turning sheet */
+
+.flipbook-turn-sheet {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    transform-style: preserve-3d;
+    transform-origin: left center;
+    will-change: transform;
+    backface-visibility: visible;
+}
+
+.flipbook-sheet-front,
+.flipbook-sheet-back {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    background: white;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
+.flipbook-sheet-front {
+    z-index: 2;
+    transform: rotateY(0deg) translateZ(.5px);
+    box-shadow: inset -8px 0 12px rgba(0,0,0,.08);
+}
+
+.flipbook-sheet-front::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(
+        90deg,
+        rgba(0,0,0,.025),
+        transparent 12%,
+        transparent 82%,
+        rgba(0,0,0,.10)
+    );
+}
+
+.flipbook-sheet-back {
+    z-index: 1;
+    transform: rotateY(180deg) translateZ(.5px);
+    background: linear-gradient(
+        90deg,
+        #e7e4dc 0%,
+        #fff 16%,
+        #f7f5ef 100%
+    );
+    box-shadow: inset 8px 0 14px rgba(0,0,0,.10);
+}
+
+.flipbook-sheet-back::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        90deg,
+        rgba(0,0,0,.16),
+        rgba(0,0,0,.035) 24%,
+        transparent 60%
+    );
+}
+
+.flipbook-image,
+.flipbook-back-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: white;
+}
+
+
+/* PAGE TURN ANIMATION */
+
+.flipbook-turn-sheet.turn-forward {
+    animation: niroBookForward .82s cubic-bezier(.65,.05,.25,1) forwards;
+}
+
+.flipbook-turn-sheet.turn-backward {
+    transform-origin: right center;
+    animation: niroBookBackward .82s cubic-bezier(.65,.05,.25,1) forwards;
+}
+
+@keyframes niroBookForward {
+    0% {
+        transform: rotateY(0deg);
+        filter: brightness(1);
+    }
+
+    35% {
+        transform: rotateY(-68deg);
+        filter: brightness(.88);
+    }
+
+    65% {
+        transform: rotateY(-132deg);
+        filter: brightness(.94);
+    }
+
+    100% {
+        transform: rotateY(-180deg);
+        filter: brightness(1);
+    }
+}
+
+@keyframes niroBookBackward {
+    0% {
+        transform: rotateY(0deg);
+        filter: brightness(1);
+    }
+
+    35% {
+        transform: rotateY(68deg);
+        filter: brightness(.88);
+    }
+
+    65% {
+        transform: rotateY(132deg);
+        filter: brightness(.94);
+    }
+
+    100% {
+        transform: rotateY(180deg);
+        filter: brightness(1);
+    }
+}
+
+
+/* FLIPBOOK CONTROLS */
+
+.flipbook-arrow {
+    flex: 0 0 auto;
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    border: 1px solid rgba(40,107,102,.18);
+    border-radius: 50%;
+    background: rgba(255,255,255,.92);
+    color: var(--teal);
+    font-size: 30px;
+    line-height: 1;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(0,0,0,.10);
+    transition: transform .2s ease, opacity .2s ease;
+}
+
+.flipbook-arrow:hover:not(:disabled) {
+    transform: scale(1.07);
+}
+
+.flipbook-arrow:disabled {
+    opacity: .28;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.flipbook-controls {
+    flex: 0 0 auto;
+    margin-top: 17px;
+    color: var(--teal);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+.flipbook-hint {
+    flex: 0 0 auto;
+    margin-top: 9px;
+    color: var(--muted);
+    font-size: 10px;
+    letter-spacing: .8px;
+    text-align: center;
+}
+
+
+/* ==========================================
+   MOBILE LAYOUT
+========================================== */
+
+@media (max-width:760px) {
+
     .topbar {
         height: auto;
         min-height: 70px;
         padding: 12px 4%;
         flex-wrap: wrap;
-        gap: 10px
+        gap: 10px;
     }
 
     .brand {
-        font-size: 1.8rem
+        font-size: 1.8rem;
     }
 
     .main-nav {
         order: 3;
         width: 100%;
         justify-content: space-between;
-        gap: 2px
+        gap: 2px;
     }
 
     .nav-link {
         padding: 9px 10px;
-        font-size: .59rem
+        font-size: .59rem;
     }
 
     .login-memory {
         padding: 10px 12px;
-        font-size: .57rem
+        font-size: .57rem;
     }
 
     .hero {
         height: 78vh;
-        min-height: 490px
+        min-height: 490px;
     }
 
     .hero-content {
         left: 7%;
         right: 7%;
-        bottom: 13%
+        bottom: 13%;
     }
 
     .hero-content h1 {
-        font-size: 3.3rem
+        font-size: 3.3rem;
     }
 
     .hero-content p {
-        font-size: .75rem
+        font-size: .75rem;
     }
 
     .hero-arrow {
         width: 30px;
         height: 42px;
-        font-size: 1.2rem
+        font-size: 1.2rem;
     }
 
-    .media-card {
-        flex-basis: 195px
-    }
-
+    .media-card,
     .book-card {
         flex-basis: 195px;
     }
 
     .page-intro {
-        padding-top: 40px
+        padding-top: 40px;
     }
 
     .shelf-heading h2 {
-        font-size: 1.45rem
+        font-size: 1.45rem;
     }
 
     .login-card {
-        padding: 35px 25px
+        padding: 35px 25px;
+    }
+
+    /* Mobile flipbook */
+
+    .flipbook-viewer {
+        padding: 66px 10px 22px;
+    }
+
+    .flipbook-close {
+        top: 12px;
+        right: 14px;
+        width: 40px;
+        height: 40px;
+        font-size: 27px;
+    }
+
+    .flipbook-heading {
+        max-width: 78%;
+        margin-bottom: 12px;
+        font-size: 19px;
+    }
+
+    .flipbook-stage {
+        gap: 7px;
+    }
+
+    .flipbook-page-wrap {
+        height: 70vh;
+        width: auto;
+        max-width: calc(100vw - 88px);
+        aspect-ratio: 2/3;
+    }
+
+    .flipbook-arrow {
+        width: 34px;
+        height: 34px;
+        font-size: 23px;
+    }
+
+    .flipbook-controls {
+        margin-top: 14px;
+        font-size: 11px;
+    }
+
+    .flipbook-hint {
+        max-width: 90%;
+        font-size: 9px;
+        line-height: 1.5;
     }
 }
 
-/* =================================
-   MOBILE HERO BANNER
-================================= */
 
-@media screen and (max-width: 768px) {
+/* MOBILE HERO BANNER */
 
+@media screen and (max-width:768px) {
     .hero-slide {
         background-image: url("assets/NIRO_Banner_Mobile.png") !important;
         background-position: center center;
         background-size: cover;
         background-repeat: no-repeat;
     }
+}
 
+
+/* SHORT LANDSCAPE SCREENS */
+
+@media (max-height:560px) and (orientation:landscape) {
+
+    .flipbook-viewer {
+        padding: 12px 10px;
+    }
+
+    .flipbook-heading {
+        margin-bottom: 8px;
+        font-size: 17px;
+    }
+
+    .flipbook-page-wrap {
+        height: 72vh;
+        width: auto;
+        max-width: 55vw;
+    }
+
+    .flipbook-controls {
+        margin-top: 7px;
+    }
+
+    .flipbook-hint {
+        display: none;
+    }
+}
+
+
+/* REDUCED MOTION ACCESSIBILITY */
+
+@media (prefers-reduced-motion:reduce) {
+    .flipbook-turn-sheet.turn-forward,
+    .flipbook-turn-sheet.turn-backward {
+        animation-duration: .01ms;
+    }
 }

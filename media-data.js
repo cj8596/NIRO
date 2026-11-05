@@ -17,9 +17,50 @@ const NIRO_MEDIA = {
     { title: "Unintentional", description: "Stakeout", category: "trips", image: "assets/videos/reel_banner/horizontal_1_stakeout_rooftopoption 01.png", url: "assets/videos/The_Unintentional_Stakeout.MP4", type: "video", visibility: "guest" }
   ],
   books: [
-    { title: "A Little Picnic", description: "", category: "trips", image: "assets/Comics/Banner/Cover_A_Little_Picnic_16x9_horizontal.png", url: "assets/Comics/comic 01 picnic/picnic.pdf", visibility: "guest" },
-    { title: "The Long Way Up", description: "Places we've explored together.", category: "trips", image: "assets/Comics/Banner/Cover_The_Long_Way_Up_16x9_horizontal.png", url: "assets/Comics/comic 02 hiking/Hiking.pdf", visibility: "guest" },
-    { title: "Until The Sun Goes Down", description: "Places we've explored together.", category: "trips", image: "assets/Comics/Banner/Cover_Until_The_Sun_Goes_Down_16x9_horizontal.png", url: "assets/Comics/comic 03 sunset/sunset.pdf", visibility: "guest" }
+    {
+      title: "A Little Picnic",
+      description: "Some days are made of nothing but us.",
+      category: "trips",
+      image: "assets/Comics/Banner/Cover_A_Little_Picnic_16x9_horizontal.png",
+      type: "flipbook",
+      visibility: "guest",
+      pages: [
+        "assets/Comics/comic 01 picnic/cover.png",
+        "assets/Comics/comic 01 picnic/Pg01.png",
+        "assets/Comics/comic 01 picnic/Pg02.png",
+        "assets/Comics/comic 01 picnic/Pg03.png"
+      ]
+    },
+    {
+      title: "The Long Way Up",
+      description: "Places we've explored together.",
+      category: "trips",
+      image: "assets/Comics/Banner/Cover_The_Long_Way_Up_16x9_horizontal.png",
+      url: "assets/Comics/comic 02 hiking/Hiking.pdf",
+      type: "flipbook",
+      visibility: "guest",
+      pages: [
+        "assets/Comics/comic 02 hiking/cover.png",
+        "assets/Comics/comic 02 hiking/Pg01.png",
+        "assets/Comics/comic 02 hiking/Pg02.png",
+        "assets/Comics/comic 02 hiking/Pg03.png"
+      ]
+    },
+    {
+      title: "Until The Sun Goes Down",
+      description: "Places we've explored together.",
+      category: "trips",
+      image: "assets/Comics/Banner/Cover_Until_The_Sun_Goes_Down_16x9_horizontal.png",
+      url: "assets/Comics/comic 03 sunset/sunset.pdf",
+      type: "flipbook",
+      visibility: "guest",
+      pages: [
+        "assets/Comics/comic 03 sunset/cover.png",
+        "assets/Comics/comic 03 sunset/Pg01.png",
+        "assets/Comics/comic 03 sunset/Pg02.png",
+        "assets/Comics/comic 03 sunset/Pg03.png"
+      ]
+    }
   ]
   // photos: [
   //   { title: "Together", description: "Our favourite photographs.", category: "collections", image: "assets/videos/reel_banner/", url: "", visibility: "guest" },
