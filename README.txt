@@ -18,9 +18,6 @@ SETUP
 5. Upload the files to the root of your GitHub Pages repository.
 6. Enable GitHub Pages from Settings > Pages.
 
-LOGIN
-Username: niro
-Password: 2616
 
 IMPORTANT
 This is a static, client-side login for convenience only. It does not provide secure authentication or protect images/videos in a public GitHub repository. Do not upload sensitive media.
